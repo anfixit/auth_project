@@ -1,3 +1,7 @@
+"""Модели приложения users."""
+
+__all__ = ["User", "UserManager"]
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -6,6 +10,8 @@ from django.db import models
 
 
 class UserManager(BaseUserManager["User"]):
+    """Менеджер кастомной модели пользователя."""
+
     def create_user(
         self,
         email: str,
@@ -14,6 +20,21 @@ class UserManager(BaseUserManager["User"]):
         last_name: str = "",
         patronymic: str = "",
     ) -> "User":
+        """Создать обычного пользователя.
+
+        Args:
+            email: Адрес электронной почты.
+            password: Пароль в открытом виде.
+            first_name: Имя пользователя.
+            last_name: Фамилия пользователя.
+            patronymic: Отчество пользователя.
+
+        Returns:
+            Созданный экземпляр User.
+
+        Raises:
+            ValueError: Если email не передан.
+        """
         if not email:
             raise ValueError("Email is required.")
         email = self.normalize_email(email)
@@ -33,6 +54,16 @@ class UserManager(BaseUserManager["User"]):
         password: str,
         **extra: object,
     ) -> "User":
+        """Создать суперпользователя с флагом is_staff.
+
+        Args:
+            email: Адрес электронной почты.
+            password: Пароль в открытом виде.
+            **extra: Дополнительные поля модели.
+
+        Returns:
+            Созданный экземпляр User с is_staff=True.
+        """
         user = self.create_user(
             email,
             password,
@@ -44,8 +75,8 @@ class UserManager(BaseUserManager["User"]):
 
 
 class User(AbstractBaseUser):
-    """
-    Кастомная модель пользователя.
+    """Кастомная модель пользователя.
+
     Идентификация по email.
     Soft delete через is_active=False.
     """
@@ -75,9 +106,10 @@ class User(AbstractBaseUser):
 
     @property
     def full_name(self) -> str:
-        parts = [
-            self.last_name,
-            self.first_name,
-            self.patronymic,
-        ]
+        """Полное имя в формате «Фамилия Имя Отчество».
+
+        Returns:
+            Строка с полным именем без лишних пробелов.
+        """
+        parts = [self.last_name, self.first_name, self.patronymic]
         return " ".join(p for p in parts if p)

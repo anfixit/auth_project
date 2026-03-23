@@ -1,4 +1,11 @@
-import json
+"""Представления приложения auth_core."""
+
+__all__ = [
+    "login_view",
+    "logout_view",
+    "refresh_view",
+]
+
 from datetime import UTC, datetime, timedelta
 
 import jwt
@@ -18,19 +25,7 @@ from apps.users.serializers import (
     RefreshTokenSerializer,
 )
 from apps.users.services import authenticate_user, get_role_names
-
-
-def _json_body(request: HttpRequest) -> dict:
-    """Безопасно распарсить JSON-тело запроса.
-
-    Returns:
-        Словарь с данными или пустой словарь
-        если тело невалидно.
-    """
-    try:
-        return json.loads(request.body)
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return {}
+from apps.utils import parse_json_body
 
 
 @require_http_methods(["POST"])
@@ -40,10 +35,13 @@ def login_view(request: HttpRequest) -> JsonResponse:
     POST /api/v1/auth/login/
     Body: { email, password }
 
+    Args:
+        request: HTTP-запрос с email и паролем.
+
     Returns:
         JsonResponse с access_token и refresh_token.
     """
-    serializer = LoginSerializer(data=_json_body(request))
+    serializer = LoginSerializer(data=parse_json_body(request))
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -66,7 +64,7 @@ def login_view(request: HttpRequest) -> JsonResponse:
     refresh_token = generate_refresh_token(user.pk)
 
     expires_at = datetime.now(UTC) + timedelta(
-        days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+        days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS,
     )
     RefreshToken.objects.create(
         user=user,
@@ -86,17 +84,19 @@ def login_view(request: HttpRequest) -> JsonResponse:
 @require_http_methods(["POST"])
 @login_required
 def logout_view(request: HttpRequest) -> JsonResponse:
-    """Выйти из системы и отозвать все refresh токены.
+    """Выйти из системы и отозвать все refresh-токены.
 
     POST /api/v1/auth/logout/
     Header: Authorization: Bearer <access_token>
+
+    Args:
+        request: HTTP-запрос с user_id в атрибутах.
 
     Returns:
         JsonResponse с количеством отозванных токенов.
     """
     user_id: int = request.user_id  # type: ignore[attr-defined]
     deleted_count, _ = RefreshToken.objects.filter(user_id=user_id).delete()
-
     return JsonResponse(
         {
             "detail": "Logged out successfully.",
@@ -107,15 +107,20 @@ def logout_view(request: HttpRequest) -> JsonResponse:
 
 @require_http_methods(["POST"])
 def refresh_view(request: HttpRequest) -> JsonResponse:
-    """Обновить access token по refresh token.
+    """Обновить access-токен по refresh-токену.
 
     POST /api/v1/auth/refresh/
     Body: { refresh_token }
 
+    Args:
+        request: HTTP-запрос с refresh_token в теле.
+
     Returns:
         JsonResponse с новым access_token.
     """
-    serializer = RefreshTokenSerializer(data=_json_body(request))
+    serializer = RefreshTokenSerializer(
+        data=parse_json_body(request),
+    )
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -148,7 +153,7 @@ def refresh_view(request: HttpRequest) -> JsonResponse:
 
     try:
         stored = RefreshToken.objects.select_related("user").get(
-            token=raw_token
+            token=raw_token,
         )
     except RefreshToken.DoesNotExist:
         return JsonResponse(

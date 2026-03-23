@@ -1,11 +1,22 @@
+"""Сериализаторы приложения users."""
+
+__all__ = [
+    "LoginSerializer",
+    "RefreshTokenSerializer",
+    "RegisterSerializer",
+    "UpdateProfileSerializer",
+    "UserProfileSerializer",
+]
+
 from rest_framework import serializers
 
+from apps.users.constants import MIN_PASSWORD_LENGTH
 from apps.users.models import User
-
-MIN_PASSWORD_LENGTH = 8
 
 
 class RegisterSerializer(serializers.Serializer):
+    """Сериализатор регистрации пользователя."""
+
     email = serializers.EmailField()
     password = serializers.CharField(
         min_length=MIN_PASSWORD_LENGTH,
@@ -23,6 +34,17 @@ class RegisterSerializer(serializers.Serializer):
     )
 
     def validate(self, attrs: dict) -> dict:
+        """Проверить совпадение паролей.
+
+        Args:
+            attrs: Словарь валидируемых полей.
+
+        Returns:
+            Валидированный словарь полей.
+
+        Raises:
+            ValidationError: Если пароли не совпадают.
+        """
         if attrs["password"] != attrs["password_confirm"]:
             raise serializers.ValidationError(
                 {"password_confirm": "Passwords do not match."}
@@ -31,11 +53,15 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.Serializer):
+    """Сериализатор входа в систему."""
+
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    """Сериализатор профиля пользователя."""
+
     full_name = serializers.CharField(read_only=True)
 
     class Meta:
@@ -59,6 +85,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UpdateProfileSerializer(serializers.Serializer):
+    """Сериализатор обновления профиля пользователя."""
+
     first_name = serializers.CharField(
         max_length=100,
         required=False,
@@ -75,4 +103,6 @@ class UpdateProfileSerializer(serializers.Serializer):
 
 
 class RefreshTokenSerializer(serializers.Serializer):
+    """Сериализатор обновления JWT-токена."""
+
     refresh_token = serializers.CharField()

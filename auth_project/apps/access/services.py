@@ -1,8 +1,17 @@
+"""Сервисный слой приложения access."""
+
+__all__ = [
+    "check_permission",
+    "invalidate_permission_cache",
+]
+
 from django.core.cache import cache
 
+from apps.access.constants import PERMISSION_CACHE_TTL
 from apps.access.models import AccessRule
+from apps.logger import get_logger
 
-_CACHE_TTL = 300  # 5 минут
+logger = get_logger(__name__)
 
 
 def check_permission(
@@ -12,15 +21,15 @@ def check_permission(
 ) -> bool:
     """Проверить право доступа роли на бизнес-объект.
 
-    Результат кешируется на 5 минут — права меняются редко.
-    Возвращает True если хотя бы одна роль из списка
-    имеет право action на элемент element_name.
+    Результат кешируется на PERMISSION_CACHE_TTL секунд —
+    права меняются редко. Возвращает True если хотя бы одна
+    роль из списка имеет право action на элемент element_name.
 
     Args:
-        role_names: список названий ролей пользователя.
-        element_name: название бизнес-объекта,
+        role_names: Список названий ролей пользователя.
+        element_name: Название бизнес-объекта,
             например 'products'.
-        action: название права,
+        action: Название права,
             например 'read_all' или 'create'.
 
     Returns:
@@ -41,7 +50,14 @@ def check_permission(
 
     result = any(rule.get(action, False) for rule in rules)
 
-    cache.set(cache_key, result, _CACHE_TTL)
+    logger.debug(
+        "Проверка прав [%s] %s.%s → %s",
+        ", ".join(role_names),
+        element_name,
+        action,
+        result,
+    )
+    cache.set(cache_key, result, PERMISSION_CACHE_TTL)
     return result
 
 
@@ -52,3 +68,4 @@ def invalidate_permission_cache() -> None:
     чтобы новые права вступили в силу немедленно.
     """
     cache.clear()
+    logger.info("Кеш прав доступа сброшен")

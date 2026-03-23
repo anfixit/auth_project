@@ -1,4 +1,18 @@
-import json
+"""Представления приложения access."""
+
+__all__ = [
+    "elements_list_view",
+    "roles_create_view",
+    "roles_delete_view",
+    "roles_list_view",
+    "rules_create_view",
+    "rules_delete_view",
+    "rules_list_view",
+    "rules_update_view",
+    "user_roles_assign_view",
+    "user_roles_list_view",
+    "user_roles_remove_view",
+]
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -17,19 +31,7 @@ from apps.access.serializers import (
 )
 from apps.access.services import invalidate_permission_cache
 from apps.auth_core.permissions import has_permission
-
-
-def _json_body(request: HttpRequest) -> dict:
-    """Безопасно распарсить JSON-тело запроса.
-
-    Returns:
-        Словарь с данными запроса или пустой словарь
-        если тело невалидно.
-    """
-    try:
-        return json.loads(request.body)
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return {}
+from apps.utils import parse_json_body
 
 
 @require_http_methods(["GET"])
@@ -39,6 +41,12 @@ def roles_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/access/roles/
     Требует право: access_rules.read_all
+
+    Args:
+        request: HTTP-запрос.
+
+    Returns:
+        JsonResponse со списком ролей.
     """
     roles = Role.objects.all()
     return JsonResponse(
@@ -54,8 +62,14 @@ def roles_create_view(request: HttpRequest) -> JsonResponse:
 
     POST /api/v1/access/roles/create/
     Требует право: access_rules.create
+
+    Args:
+        request: HTTP-запрос с данными роли.
+
+    Returns:
+        JsonResponse с созданной ролью.
     """
-    serializer = RoleSerializer(data=_json_body(request))
+    serializer = RoleSerializer(data=parse_json_body(request))
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -78,6 +92,13 @@ def roles_delete_view(
 
     DELETE /api/v1/access/roles/<role_id>/delete/
     Требует право: access_rules.delete_all
+
+    Args:
+        request: HTTP-запрос.
+        role_id: Идентификатор роли.
+
+    Returns:
+        JsonResponse с подтверждением удаления.
     """
     try:
         role = Role.objects.get(pk=role_id)
@@ -98,6 +119,12 @@ def elements_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/access/elements/
     Требует право: access_rules.read_all
+
+    Args:
+        request: HTTP-запрос.
+
+    Returns:
+        JsonResponse со списком бизнес-объектов.
     """
     elements = BusinessElement.objects.all()
     return JsonResponse(
@@ -113,8 +140,17 @@ def rules_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/access/rules/
     Требует право: access_rules.read_all
+
+    Args:
+        request: HTTP-запрос.
+
+    Returns:
+        JsonResponse с матрицей прав.
     """
-    rules = AccessRule.objects.select_related("role", "element").all()
+    rules = AccessRule.objects.select_related(
+        "role",
+        "element",
+    ).all()
     return JsonResponse(
         AccessRuleSerializer(rules, many=True).data,
         safe=False,
@@ -128,8 +164,16 @@ def rules_create_view(request: HttpRequest) -> JsonResponse:
 
     POST /api/v1/access/rules/create/
     Требует право: access_rules.create
+
+    Args:
+        request: HTTP-запрос с данными правила.
+
+    Returns:
+        JsonResponse с созданным правилом.
     """
-    serializer = AccessRuleSerializer(data=_json_body(request))
+    serializer = AccessRuleSerializer(
+        data=parse_json_body(request),
+    )
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -156,6 +200,13 @@ def rules_update_view(
 
     PATCH /api/v1/access/rules/<rule_id>/update/
     Требует право: access_rules.update_all
+
+    Args:
+        request: HTTP-запрос с обновлёнными данными.
+        rule_id: Идентификатор правила.
+
+    Returns:
+        JsonResponse с обновлённым правилом.
     """
     try:
         rule = AccessRule.objects.get(pk=rule_id)
@@ -166,7 +217,7 @@ def rules_update_view(
         )
     serializer = AccessRuleSerializer(
         rule,
-        data=_json_body(request),
+        data=parse_json_body(request),
         partial=True,
     )
     if not serializer.is_valid():
@@ -192,6 +243,13 @@ def rules_delete_view(
 
     DELETE /api/v1/access/rules/<rule_id>/delete/
     Требует право: access_rules.delete_all
+
+    Args:
+        request: HTTP-запрос.
+        rule_id: Идентификатор правила.
+
+    Returns:
+        JsonResponse с подтверждением удаления.
     """
     try:
         rule = AccessRule.objects.get(pk=rule_id)
@@ -212,8 +270,17 @@ def user_roles_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/access/user-roles/
     Требует право: users.read_all
+
+    Args:
+        request: HTTP-запрос.
+
+    Returns:
+        JsonResponse со списком назначений.
     """
-    user_roles = UserRole.objects.select_related("user", "role").all()
+    user_roles = UserRole.objects.select_related(
+        "user",
+        "role",
+    ).all()
     return JsonResponse(
         UserRoleSerializer(user_roles, many=True).data,
         safe=False,
@@ -229,8 +296,16 @@ def user_roles_assign_view(
 
     POST /api/v1/access/user-roles/assign/
     Требует право: access_rules.create
+
+    Args:
+        request: HTTP-запрос с user и role.
+
+    Returns:
+        JsonResponse с созданным назначением.
     """
-    serializer = UserRoleSerializer(data=_json_body(request))
+    serializer = UserRoleSerializer(
+        data=parse_json_body(request),
+    )
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -260,6 +335,13 @@ def user_roles_remove_view(
 
     DELETE /api/v1/access/user-roles/<user_role_id>/remove/
     Требует право: access_rules.delete_all
+
+    Args:
+        request: HTTP-запрос.
+        user_role_id: Идентификатор назначения роли.
+
+    Returns:
+        JsonResponse с подтверждением снятия роли.
     """
     try:
         user_role = UserRole.objects.get(pk=user_role_id)

@@ -1,11 +1,15 @@
+"""Модели приложения access."""
+
+__all__ = ["AccessRule", "BusinessElement", "Role", "UserRole"]
+
 from django.db import models
 
 from apps.users.models import User
 
 
 class Role(models.Model):
-    """
-    Роли пользователей в системе.
+    """Роль пользователя в системе.
+
     Примеры: admin, manager, user, guest.
     """
 
@@ -22,8 +26,8 @@ class Role(models.Model):
 
 
 class UserRole(models.Model):
-    """
-    Связь пользователь ↔ роль.
+    """Связь пользователь ↔ роль.
+
     У одного пользователя может быть несколько ролей.
     """
 
@@ -48,9 +52,8 @@ class UserRole(models.Model):
 
 
 class BusinessElement(models.Model):
-    """
-    Бизнес-объекты приложения, к которым
-    применяются права доступа.
+    """Бизнес-объект приложения, к которому применяются права.
+
     Примеры: users, products, shops, orders, access_rules.
     """
 
@@ -66,8 +69,7 @@ class BusinessElement(models.Model):
 
 
 class AccessRule(models.Model):
-    """
-    Матрица прав: роль × бизнес-объект × действия.
+    """Матрица прав: роль × бизнес-объект × действия.
 
     Семантика полей:
     - read        — читать свои объекты (owner_id == user.id)

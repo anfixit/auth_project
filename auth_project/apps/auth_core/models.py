@@ -1,13 +1,17 @@
+"""Модели приложения auth_core."""
+
+__all__ = ["RefreshToken"]
+
 from django.db import models
 
 from apps.users.models import User
 
 
 class RefreshToken(models.Model):
-    """
-    Хранит выданные refresh токены.
-    При logout — токен удаляется,
-    повторный refresh невозможен.
+    """Хранит выданные refresh-токены.
+
+    При logout токен удаляется —
+    повторный refresh становится невозможен.
     """
 
     user = models.ForeignKey(
