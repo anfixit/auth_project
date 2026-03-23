@@ -1,11 +1,4 @@
-"""Представления приложения users."""
-
-__all__ = [
-    'delete_account_view',
-    'profile_view',
-    'register_view',
-    'update_profile_view',
-]
+import json
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -18,17 +11,23 @@ from apps.users.serializers import (
     UserProfileSerializer,
 )
 from apps.users.services import create_user, soft_delete_user
-from apps.utils import parse_json_body
+
+
+def _json_body(request: HttpRequest) -> dict:
+    """Безопасно распарсить JSON-тело запроса.
+
+    Returns:
+        Словарь с данными или пустой словарь
+        если тело невалидно.
+    """
+    try:
+        return json.loads(request.body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return {}
 
 
 def _assign_default_role(user: User) -> None:
-    """Назначить роль 'user' при регистрации.
-
-    Args:
-        user: Экземпляр созданного пользователя.
-    """
-    # Отложенный импорт для разрыва циклической зависимости
-    # users → access → users
+    """Назначить роль 'user' при регистрации."""
     from apps.access.models import Role, UserRole
 
     try:
@@ -48,13 +47,10 @@ def register_view(request: HttpRequest) -> JsonResponse:
         first_name, last_name, patronymic?
     }
 
-    Args:
-        request: HTTP-запрос.
-
     Returns:
         JsonResponse с профилем созданного пользователя.
     """
-    serializer = RegisterSerializer(data=parse_json_body(request))
+    serializer = RegisterSerializer(data=_json_body(request))
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -91,13 +87,10 @@ def profile_view(request: HttpRequest) -> JsonResponse:
     GET /api/v1/users/me/
     Header: Authorization: Bearer <token>
 
-    Args:
-        request: HTTP-запрос с user_id в атрибутах.
-
     Returns:
         JsonResponse с данными профиля.
     """
-    user_id: int = request.user_id
+    user_id: int = request.user_id  # type: ignore[attr-defined]
     try:
         user = User.objects.get(pk=user_id, is_active=True)
     except User.DoesNotExist:
@@ -117,9 +110,6 @@ def update_profile_view(request: HttpRequest) -> JsonResponse:
     Header: Authorization: Bearer <token>
     Body: { first_name?, last_name?, patronymic? }
 
-    Args:
-        request: HTTP-запрос с user_id в атрибутах.
-
     Returns:
         JsonResponse с обновлёнными данными профиля.
     """
@@ -132,9 +122,7 @@ def update_profile_view(request: HttpRequest) -> JsonResponse:
             status=404,
         )
 
-    serializer = UpdateProfileSerializer(
-        data=parse_json_body(request),
-    )
+    serializer = UpdateProfileSerializer(data=_json_body(request))
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -162,17 +150,15 @@ def delete_account_view(request: HttpRequest) -> JsonResponse:
 
     Устанавливает is_active=False и отзывает все токены.
 
-    Args:
-        request: HTTP-запрос с user_id в атрибутах.
-
     Returns:
         JsonResponse с подтверждением удаления.
     """
-    user_id: int = request.user_id
+    user_id: int = request.user_id  # type: ignore[attr-defined]
 
     from apps.auth_core.models import RefreshToken
 
     RefreshToken.objects.filter(user_id=user_id).delete()
+
     soft_delete_user(user_id)
     return JsonResponse(
         {'detail': 'Account deactivated successfully.'},

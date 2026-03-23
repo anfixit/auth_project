@@ -31,6 +31,7 @@ from apps.access.serializers import (
 )
 from apps.access.services import invalidate_permission_cache
 from apps.auth_core.permissions import has_permission
+from apps.users.models import User
 from apps.utils import parse_json_body
 
 
@@ -101,13 +102,13 @@ def roles_delete_view(
         JsonResponse с подтверждением удаления.
     """
     try:
-        role = Role.objects.get(pk=role_id)
+        Role.objects.get(pk=role_id)
     except Role.DoesNotExist:
         return JsonResponse(
             {'detail': 'Role not found.'},
             status=404,
         )
-    role.delete()
+    Role.objects.filter(pk=role_id).delete()
     invalidate_permission_cache()
     return JsonResponse({'detail': 'Role deleted.'})
 
@@ -252,13 +253,13 @@ def rules_delete_view(
         JsonResponse с подтверждением удаления.
     """
     try:
-        rule = AccessRule.objects.get(pk=rule_id)
+        AccessRule.objects.get(pk=rule_id)
     except AccessRule.DoesNotExist:
         return JsonResponse(
             {'detail': 'Rule not found.'},
             status=404,
         )
-    rule.delete()
+    AccessRule.objects.filter(pk=rule_id).delete()
     invalidate_permission_cache()
     return JsonResponse({'detail': 'Rule deleted.'})
 
@@ -303,20 +304,28 @@ def user_roles_assign_view(
     Returns:
         JsonResponse с созданным назначением.
     """
-    serializer = UserRoleSerializer(
-        data=parse_json_body(request),
-    )
-    if not serializer.is_valid():
+    data = parse_json_body(request)
+    user_id = data.get('user')
+    role_id = data.get('role')
+
+    if not user_id or not role_id:
         return JsonResponse(
-            {
-                'detail': 'Validation error.',
-                'errors': serializer.errors,
-            },
+            {'detail': 'user and role are required.'},
             status=400,
         )
+
+    try:
+        user = User.objects.get(pk=user_id)
+        role = Role.objects.get(pk=role_id)
+    except (User.DoesNotExist, Role.DoesNotExist):
+        return JsonResponse(
+            {'detail': 'User or role not found.'},
+            status=404,
+        )
+
     user_role, created = UserRole.objects.get_or_create(
-        user_id=serializer.validated_data['user'].pk,
-        role_id=serializer.validated_data['role'].pk,
+        user=user,
+        role=role,
     )
     invalidate_permission_cache()
     return JsonResponse(
@@ -344,12 +353,12 @@ def user_roles_remove_view(
         JsonResponse с подтверждением снятия роли.
     """
     try:
-        user_role = UserRole.objects.get(pk=user_role_id)
+        UserRole.objects.get(pk=user_role_id)
     except UserRole.DoesNotExist:
         return JsonResponse(
             {'detail': 'UserRole not found.'},
             status=404,
         )
-    user_role.delete()
+    UserRole.objects.filter(pk=user_role_id).delete()
     invalidate_permission_cache()
     return JsonResponse({'detail': 'Role removed from user.'})

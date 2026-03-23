@@ -56,8 +56,12 @@ class JWTAuthMiddleware:
             try:
                 payload = decode_token(token)
                 if payload.get('type') == 'access':
-                    request.user_id = int(payload['sub'])  # type: ignore[attr-defined]
-                    request.roles = payload.get('roles', [])  # type: ignore[attr-defined]
+                    request.user_id = (  # type: ignore[attr-defined]
+                        int(payload['sub'])
+                    )
+                    request.roles = (  # type: ignore[attr-defined]
+                        payload.get('roles', [])
+                    )
             except jwt.ExpiredSignatureError:
                 logger.warning('JWT токен истёк')
             except jwt.InvalidTokenError:
