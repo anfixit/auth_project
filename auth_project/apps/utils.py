@@ -1,6 +1,6 @@
 """Общие утилиты проекта."""
 
-__all__ = ["parse_json_body"]
+__all__ = ['parse_json_body']
 
 import json
 

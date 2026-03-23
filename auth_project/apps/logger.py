@@ -1,15 +1,15 @@
 """Настройка логирования для проекта."""
 
-__all__ = ["get_logger"]
+__all__ = ['get_logger']
 
 import logging
 import sys
 from pathlib import Path
 
 _LOG_FORMAT = (
-    "%(asctime)s | %(levelname)-8s | %(name)s:%(lineno)d | %(message)s"
+    '%(asctime)s | %(levelname)-8s | %(name)s:%(lineno)d | %(message)s'
 )
-_LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+_LOG_DIR = Path(__file__).resolve().parent.parent / 'logs'
 
 
 def get_logger(name: str) -> logging.Logger:
@@ -39,8 +39,8 @@ def get_logger(name: str) -> logging.Logger:
     console.setFormatter(logging.Formatter(_LOG_FORMAT))
 
     file_handler = logging.FileHandler(
-        _LOG_DIR / f"{name}.log",
-        encoding="utf-8",
+        _LOG_DIR / f'{name}.log',
+        encoding='utf-8',
     )
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(logging.Formatter(_LOG_FORMAT))

@@ -16,8 +16,8 @@ def factory() -> RequestFactory:
 def role_admin(db) -> Role:
     """Создать роль admin."""
     return Role.objects.create(
-        name="admin",
-        description="Admin role",
+        name='admin',
+        description='Admin role',
     )
 
 
@@ -25,31 +25,31 @@ def role_admin(db) -> Role:
 def role_user(db) -> Role:
     """Создать роль user."""
     return Role.objects.create(
-        name="user",
-        description="Regular user",
+        name='user',
+        description='Regular user',
     )
 
 
 @pytest.fixture
 def element_products(db) -> BusinessElement:
     """Создать бизнес-объект products."""
-    return BusinessElement.objects.create(name="products")
+    return BusinessElement.objects.create(name='products')
 
 
 @pytest.fixture
 def element_access_rules(db) -> BusinessElement:
     """Создать бизнес-объект access_rules."""
-    return BusinessElement.objects.create(name="access_rules")
+    return BusinessElement.objects.create(name='access_rules')
 
 
 @pytest.fixture
 def admin_user(db, role_admin: Role) -> User:
     """Создать пользователя с ролью admin."""
     user = User.objects.create(
-        email="admin@example.com",
-        first_name="Admin",
-        last_name="User",
-        password=hash_password("AdminPass1!"),
+        email='admin@example.com',
+        first_name='Admin',
+        last_name='User',
+        password=hash_password('AdminPass1!'),
     )
     UserRole.objects.create(user=user, role=role_admin)
     return user
@@ -59,10 +59,10 @@ def admin_user(db, role_admin: Role) -> User:
 def regular_user(db, role_user: Role) -> User:
     """Создать пользователя с ролью user."""
     user = User.objects.create(
-        email="user@example.com",
-        first_name="Regular",
-        last_name="User",
-        password=hash_password("UserPass1!"),
+        email='user@example.com',
+        first_name='Regular',
+        last_name='User',
+        password=hash_password('UserPass1!'),
     )
     UserRole.objects.create(user=user, role=role_user)
     return user

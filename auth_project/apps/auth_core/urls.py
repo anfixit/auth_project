@@ -7,7 +7,7 @@ from apps.auth_core.views import (
 )
 
 urlpatterns = [
-    path("login/", login_view, name="auth-login"),
-    path("logout/", logout_view, name="auth-logout"),
-    path("refresh/", refresh_view, name="auth-refresh"),
+    path('login/', login_view, name='auth-login'),
+    path('logout/', logout_view, name='auth-logout'),
+    path('refresh/', refresh_view, name='auth-refresh'),
 ]

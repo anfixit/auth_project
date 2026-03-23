@@ -1,17 +1,17 @@
 """Представления приложения access."""
 
 __all__ = [
-    "elements_list_view",
-    "roles_create_view",
-    "roles_delete_view",
-    "roles_list_view",
-    "rules_create_view",
-    "rules_delete_view",
-    "rules_list_view",
-    "rules_update_view",
-    "user_roles_assign_view",
-    "user_roles_list_view",
-    "user_roles_remove_view",
+    'elements_list_view',
+    'roles_create_view',
+    'roles_delete_view',
+    'roles_list_view',
+    'rules_create_view',
+    'rules_delete_view',
+    'rules_list_view',
+    'rules_update_view',
+    'user_roles_assign_view',
+    'user_roles_list_view',
+    'user_roles_remove_view',
 ]
 
 from django.http import HttpRequest, JsonResponse
@@ -34,8 +34,8 @@ from apps.auth_core.permissions import has_permission
 from apps.utils import parse_json_body
 
 
-@require_http_methods(["GET"])
-@has_permission("access_rules", "read_all")
+@require_http_methods(['GET'])
+@has_permission('access_rules', 'read_all')
 def roles_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть список всех ролей.
 
@@ -55,8 +55,8 @@ def roles_list_view(request: HttpRequest) -> JsonResponse:
     )
 
 
-@require_http_methods(["POST"])
-@has_permission("access_rules", "create")
+@require_http_methods(['POST'])
+@has_permission('access_rules', 'create')
 def roles_create_view(request: HttpRequest) -> JsonResponse:
     """Создать новую роль.
 
@@ -73,8 +73,8 @@ def roles_create_view(request: HttpRequest) -> JsonResponse:
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
@@ -82,8 +82,8 @@ def roles_create_view(request: HttpRequest) -> JsonResponse:
     return JsonResponse(RoleSerializer(role).data, status=201)
 
 
-@require_http_methods(["DELETE"])
-@has_permission("access_rules", "delete_all")
+@require_http_methods(['DELETE'])
+@has_permission('access_rules', 'delete_all')
 def roles_delete_view(
     request: HttpRequest,
     role_id: int,
@@ -104,16 +104,16 @@ def roles_delete_view(
         role = Role.objects.get(pk=role_id)
     except Role.DoesNotExist:
         return JsonResponse(
-            {"detail": "Role not found."},
+            {'detail': 'Role not found.'},
             status=404,
         )
     role.delete()
     invalidate_permission_cache()
-    return JsonResponse({"detail": "Role deleted."})
+    return JsonResponse({'detail': 'Role deleted.'})
 
 
-@require_http_methods(["GET"])
-@has_permission("access_rules", "read_all")
+@require_http_methods(['GET'])
+@has_permission('access_rules', 'read_all')
 def elements_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть список всех бизнес-объектов.
 
@@ -133,8 +133,8 @@ def elements_list_view(request: HttpRequest) -> JsonResponse:
     )
 
 
-@require_http_methods(["GET"])
-@has_permission("access_rules", "read_all")
+@require_http_methods(['GET'])
+@has_permission('access_rules', 'read_all')
 def rules_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть полную матрицу прав доступа.
 
@@ -148,8 +148,8 @@ def rules_list_view(request: HttpRequest) -> JsonResponse:
         JsonResponse с матрицей прав.
     """
     rules = AccessRule.objects.select_related(
-        "role",
-        "element",
+        'role',
+        'element',
     ).all()
     return JsonResponse(
         AccessRuleSerializer(rules, many=True).data,
@@ -157,8 +157,8 @@ def rules_list_view(request: HttpRequest) -> JsonResponse:
     )
 
 
-@require_http_methods(["POST"])
-@has_permission("access_rules", "create")
+@require_http_methods(['POST'])
+@has_permission('access_rules', 'create')
 def rules_create_view(request: HttpRequest) -> JsonResponse:
     """Создать новое правило доступа.
 
@@ -177,8 +177,8 @@ def rules_create_view(request: HttpRequest) -> JsonResponse:
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
@@ -190,8 +190,8 @@ def rules_create_view(request: HttpRequest) -> JsonResponse:
     )
 
 
-@require_http_methods(["PATCH"])
-@has_permission("access_rules", "update_all")
+@require_http_methods(['PATCH'])
+@has_permission('access_rules', 'update_all')
 def rules_update_view(
     request: HttpRequest,
     rule_id: int,
@@ -212,7 +212,7 @@ def rules_update_view(
         rule = AccessRule.objects.get(pk=rule_id)
     except AccessRule.DoesNotExist:
         return JsonResponse(
-            {"detail": "Rule not found."},
+            {'detail': 'Rule not found.'},
             status=404,
         )
     serializer = AccessRuleSerializer(
@@ -223,8 +223,8 @@ def rules_update_view(
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
@@ -233,8 +233,8 @@ def rules_update_view(
     return JsonResponse(serializer.data)
 
 
-@require_http_methods(["DELETE"])
-@has_permission("access_rules", "delete_all")
+@require_http_methods(['DELETE'])
+@has_permission('access_rules', 'delete_all')
 def rules_delete_view(
     request: HttpRequest,
     rule_id: int,
@@ -255,16 +255,16 @@ def rules_delete_view(
         rule = AccessRule.objects.get(pk=rule_id)
     except AccessRule.DoesNotExist:
         return JsonResponse(
-            {"detail": "Rule not found."},
+            {'detail': 'Rule not found.'},
             status=404,
         )
     rule.delete()
     invalidate_permission_cache()
-    return JsonResponse({"detail": "Rule deleted."})
+    return JsonResponse({'detail': 'Rule deleted.'})
 
 
-@require_http_methods(["GET"])
-@has_permission("users", "read_all")
+@require_http_methods(['GET'])
+@has_permission('users', 'read_all')
 def user_roles_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть список всех назначений ролей пользователям.
 
@@ -278,8 +278,8 @@ def user_roles_list_view(request: HttpRequest) -> JsonResponse:
         JsonResponse со списком назначений.
     """
     user_roles = UserRole.objects.select_related(
-        "user",
-        "role",
+        'user',
+        'role',
     ).all()
     return JsonResponse(
         UserRoleSerializer(user_roles, many=True).data,
@@ -287,8 +287,8 @@ def user_roles_list_view(request: HttpRequest) -> JsonResponse:
     )
 
 
-@require_http_methods(["POST"])
-@has_permission("access_rules", "create")
+@require_http_methods(['POST'])
+@has_permission('access_rules', 'create')
 def user_roles_assign_view(
     request: HttpRequest,
 ) -> JsonResponse:
@@ -309,14 +309,14 @@ def user_roles_assign_view(
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
     user_role, created = UserRole.objects.get_or_create(
-        user_id=serializer.validated_data["user"].pk,
-        role_id=serializer.validated_data["role"].pk,
+        user_id=serializer.validated_data['user'].pk,
+        role_id=serializer.validated_data['role'].pk,
     )
     invalidate_permission_cache()
     return JsonResponse(
@@ -325,8 +325,8 @@ def user_roles_assign_view(
     )
 
 
-@require_http_methods(["DELETE"])
-@has_permission("access_rules", "delete_all")
+@require_http_methods(['DELETE'])
+@has_permission('access_rules', 'delete_all')
 def user_roles_remove_view(
     request: HttpRequest,
     user_role_id: int,
@@ -347,9 +347,9 @@ def user_roles_remove_view(
         user_role = UserRole.objects.get(pk=user_role_id)
     except UserRole.DoesNotExist:
         return JsonResponse(
-            {"detail": "UserRole not found."},
+            {'detail': 'UserRole not found.'},
             status=404,
         )
     user_role.delete()
     invalidate_permission_cache()
-    return JsonResponse({"detail": "Role removed from user."})
+    return JsonResponse({'detail': 'Role removed from user.'})

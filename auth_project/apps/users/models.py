@@ -1,6 +1,6 @@
 """Модели приложения users."""
 
-__all__ = ["User", "UserManager"]
+__all__ = ['User', 'UserManager']
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -9,17 +9,17 @@ from django.contrib.auth.models import (
 from django.db import models
 
 
-class UserManager(BaseUserManager["User"]):
+class UserManager(BaseUserManager['User']):
     """Менеджер кастомной модели пользователя."""
 
     def create_user(
         self,
         email: str,
         password: str,
-        first_name: str = "",
-        last_name: str = "",
-        patronymic: str = "",
-    ) -> "User":
+        first_name: str = '',
+        last_name: str = '',
+        patronymic: str = '',
+    ) -> 'User':
         """Создать обычного пользователя.
 
         Args:
@@ -36,7 +36,7 @@ class UserManager(BaseUserManager["User"]):
             ValueError: Если email не передан.
         """
         if not email:
-            raise ValueError("Email is required.")
+            raise ValueError('Email is required.')
         email = self.normalize_email(email)
         user = self.model(
             email=email,
@@ -53,7 +53,7 @@ class UserManager(BaseUserManager["User"]):
         email: str,
         password: str,
         **extra: object,
-    ) -> "User":
+    ) -> 'User':
         """Создать суперпользователя с флагом is_staff.
 
         Args:
@@ -94,12 +94,12 @@ class User(AbstractBaseUser):
 
     objects: UserManager = UserManager()
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
-        db_table = "users"
-        ordering = ("email",)
+        db_table = 'users'
+        ordering = ('email',)
 
     def __str__(self) -> str:
         return self.email
@@ -112,4 +112,4 @@ class User(AbstractBaseUser):
             Строка с полным именем без лишних пробелов.
         """
         parts = [self.last_name, self.first_name, self.patronymic]
-        return " ".join(p for p in parts if p)
+        return ' '.join(p for p in parts if p)

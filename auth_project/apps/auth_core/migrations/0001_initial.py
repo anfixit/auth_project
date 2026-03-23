@@ -14,33 +14,33 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="RefreshToken",
+            name='RefreshToken',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
-                ("token", models.TextField(unique=True)),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("expires_at", models.DateTimeField()),
+                ('token', models.TextField(unique=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('expires_at', models.DateTimeField()),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="refresh_tokens",
+                        related_name='refresh_tokens',
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Refresh Token",
-                "verbose_name_plural": "Refresh Tokens",
-                "db_table": "refresh_tokens",
+                'verbose_name': 'Refresh Token',
+                'verbose_name_plural': 'Refresh Tokens',
+                'db_table': 'refresh_tokens',
             },
         ),
     ]

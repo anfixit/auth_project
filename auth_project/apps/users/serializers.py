@@ -1,11 +1,11 @@
 """Сериализаторы приложения users."""
 
 __all__ = [
-    "LoginSerializer",
-    "RefreshTokenSerializer",
-    "RegisterSerializer",
-    "UpdateProfileSerializer",
-    "UserProfileSerializer",
+    'LoginSerializer',
+    'RefreshTokenSerializer',
+    'RegisterSerializer',
+    'UpdateProfileSerializer',
+    'UserProfileSerializer',
 ]
 
 from rest_framework import serializers
@@ -30,7 +30,7 @@ class RegisterSerializer(serializers.Serializer):
     patronymic = serializers.CharField(
         max_length=100,
         required=False,
-        default="",
+        default='',
     )
 
     def validate(self, attrs: dict) -> dict:
@@ -45,9 +45,9 @@ class RegisterSerializer(serializers.Serializer):
         Raises:
             ValidationError: Если пароли не совпадают.
         """
-        if attrs["password"] != attrs["password_confirm"]:
+        if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError(
-                {"password_confirm": "Passwords do not match."}
+                {'password_confirm': 'Passwords do not match.'}
             )
         return attrs
 
@@ -67,20 +67,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "id",
-            "email",
-            "first_name",
-            "last_name",
-            "patronymic",
-            "full_name",
-            "created_at",
-            "updated_at",
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'patronymic',
+            'full_name',
+            'created_at',
+            'updated_at',
         )
         read_only_fields = (
-            "id",
-            "email",
-            "created_at",
-            "updated_at",
+            'id',
+            'email',
+            'created_at',
+            'updated_at',
         )
 
 

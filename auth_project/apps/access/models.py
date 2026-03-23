@@ -1,6 +1,6 @@
 """Модели приложения access."""
 
-__all__ = ["AccessRule", "BusinessElement", "Role", "UserRole"]
+__all__ = ['AccessRule', 'BusinessElement', 'Role', 'UserRole']
 
 from django.db import models
 
@@ -18,8 +18,8 @@ class Role(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "roles"
-        ordering = ("name",)
+        db_table = 'roles'
+        ordering = ('name',)
 
     def __str__(self) -> str:
         return self.name
@@ -34,21 +34,21 @@ class UserRole(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="user_roles",
+        related_name='user_roles',
     )
     role = models.ForeignKey(
         Role,
         on_delete=models.CASCADE,
-        related_name="user_roles",
+        related_name='user_roles',
     )
     assigned_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "user_roles"
-        unique_together = ("user", "role")
+        db_table = 'user_roles'
+        unique_together = ('user', 'role')
 
     def __str__(self) -> str:
-        return f"{self.user.email} → {self.role.name}"
+        return f'{self.user.email} → {self.role.name}'
 
 
 class BusinessElement(models.Model):
@@ -61,8 +61,8 @@ class BusinessElement(models.Model):
     description = models.TextField(blank=True)
 
     class Meta:
-        db_table = "business_elements"
-        ordering = ("name",)
+        db_table = 'business_elements'
+        ordering = ('name',)
 
     def __str__(self) -> str:
         return self.name
@@ -84,12 +84,12 @@ class AccessRule(models.Model):
     role = models.ForeignKey(
         Role,
         on_delete=models.CASCADE,
-        related_name="access_rules",
+        related_name='access_rules',
     )
     element = models.ForeignKey(
         BusinessElement,
         on_delete=models.CASCADE,
-        related_name="access_rules",
+        related_name='access_rules',
     )
 
     read = models.BooleanField(default=False)
@@ -101,8 +101,8 @@ class AccessRule(models.Model):
     delete_all = models.BooleanField(default=False)
 
     class Meta:
-        db_table = "access_rules"
-        unique_together = ("role", "element")
+        db_table = 'access_rules'
+        unique_together = ('role', 'element')
 
     def __str__(self) -> str:
-        return f"{self.role.name} → {self.element.name}"
+        return f'{self.role.name} → {self.element.name}'

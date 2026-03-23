@@ -1,9 +1,9 @@
 """Утилиты генерации и валидации JWT-токенов."""
 
 __all__ = [
-    "decode_token",
-    "generate_access_token",
-    "generate_refresh_token",
+    'decode_token',
+    'generate_access_token',
+    'generate_refresh_token',
 ]
 
 from datetime import UTC, datetime, timedelta
@@ -42,11 +42,11 @@ def generate_access_token(
     """
     now = datetime.now(UTC)
     payload: dict[str, Any] = {
-        "sub": str(user_id),
-        "roles": role_names,
-        "type": "access",
-        "iat": now,
-        "exp": now
+        'sub': str(user_id),
+        'roles': role_names,
+        'type': 'access',
+        'iat': now,
+        'exp': now
         + timedelta(
             minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
         ),
@@ -67,10 +67,10 @@ def generate_refresh_token(user_id: int) -> str:
     """
     now = datetime.now(UTC)
     payload: dict[str, Any] = {
-        "sub": str(user_id),
-        "type": "refresh",
-        "iat": now,
-        "exp": now
+        'sub': str(user_id),
+        'type': 'refresh',
+        'iat': now,
+        'exp': now
         + timedelta(
             days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS,
         ),

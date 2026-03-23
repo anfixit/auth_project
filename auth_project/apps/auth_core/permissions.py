@@ -1,6 +1,6 @@
 """Декораторы проверки аутентификации и прав доступа."""
 
-__all__ = ["has_permission", "login_required"]
+__all__ = ['has_permission', 'login_required']
 
 from collections.abc import Callable
 from functools import wraps
@@ -29,9 +29,9 @@ def login_required(
         *args: Any,
         **kwargs: Any,
     ) -> Any:
-        if not getattr(request, "user_id", None):
+        if not getattr(request, 'user_id', None):
             return JsonResponse(
-                {"detail": "Authentication required."},
+                {'detail': 'Authentication required.'},
                 status=401,
             )
         return view(request, *args, **kwargs)
@@ -67,17 +67,17 @@ def has_permission(
             *args: Any,
             **kwargs: Any,
         ) -> Any:
-            user_id = getattr(request, "user_id", None)
+            user_id = getattr(request, 'user_id', None)
             if not user_id:
                 return JsonResponse(
-                    {"detail": "Authentication required."},
+                    {'detail': 'Authentication required.'},
                     status=401,
                 )
 
-            roles: list[str] = getattr(request, "roles", [])
+            roles: list[str] = getattr(request, 'roles', [])
             if not check_permission(roles, element, action):
                 return JsonResponse(
-                    {"detail": "Forbidden."},
+                    {'detail': 'Forbidden.'},
                     status=403,
                 )
 

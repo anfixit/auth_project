@@ -1,9 +1,9 @@
 """Представления приложения auth_core."""
 
 __all__ = [
-    "login_view",
-    "logout_view",
-    "refresh_view",
+    'login_view',
+    'logout_view',
+    'refresh_view',
 ]
 
 from datetime import UTC, datetime, timedelta
@@ -28,7 +28,7 @@ from apps.users.services import authenticate_user, get_role_names
 from apps.utils import parse_json_body
 
 
-@require_http_methods(["POST"])
+@require_http_methods(['POST'])
 def login_view(request: HttpRequest) -> JsonResponse:
     """Аутентифицировать пользователя и выдать токены.
 
@@ -45,17 +45,17 @@ def login_view(request: HttpRequest) -> JsonResponse:
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
 
     data = serializer.validated_data
-    user = authenticate_user(data["email"], data["password"])
+    user = authenticate_user(data['email'], data['password'])
     if user is None:
         return JsonResponse(
-            {"detail": "Invalid email or password."},
+            {'detail': 'Invalid email or password.'},
             status=401,
         )
 
@@ -74,14 +74,14 @@ def login_view(request: HttpRequest) -> JsonResponse:
 
     return JsonResponse(
         {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "Bearer",
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'token_type': 'Bearer',
         }
     )
 
 
-@require_http_methods(["POST"])
+@require_http_methods(['POST'])
 @login_required
 def logout_view(request: HttpRequest) -> JsonResponse:
     """Выйти из системы и отозвать все refresh-токены.
@@ -99,13 +99,13 @@ def logout_view(request: HttpRequest) -> JsonResponse:
     deleted_count, _ = RefreshToken.objects.filter(user_id=user_id).delete()
     return JsonResponse(
         {
-            "detail": "Logged out successfully.",
-            "tokens_revoked": deleted_count,
+            'detail': 'Logged out successfully.',
+            'tokens_revoked': deleted_count,
         }
     )
 
 
-@require_http_methods(["POST"])
+@require_http_methods(['POST'])
 def refresh_view(request: HttpRequest) -> JsonResponse:
     """Обновить access-токен по refresh-токену.
 
@@ -124,46 +124,46 @@ def refresh_view(request: HttpRequest) -> JsonResponse:
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
 
-    raw_token: str = serializer.validated_data["refresh_token"]
+    raw_token: str = serializer.validated_data['refresh_token']
 
     try:
         payload = decode_token(raw_token)
     except jwt.ExpiredSignatureError:
         return JsonResponse(
-            {"detail": "Refresh token expired."},
+            {'detail': 'Refresh token expired.'},
             status=401,
         )
     except jwt.InvalidTokenError:
         return JsonResponse(
-            {"detail": "Invalid refresh token."},
+            {'detail': 'Invalid refresh token.'},
             status=401,
         )
 
-    if payload.get("type") != "refresh":
+    if payload.get('type') != 'refresh':
         return JsonResponse(
-            {"detail": "Invalid token type."},
+            {'detail': 'Invalid token type.'},
             status=401,
         )
 
     try:
-        stored = RefreshToken.objects.select_related("user").get(
+        stored = RefreshToken.objects.select_related('user').get(
             token=raw_token,
         )
     except RefreshToken.DoesNotExist:
         return JsonResponse(
-            {"detail": "Refresh token not found or revoked."},
+            {'detail': 'Refresh token not found or revoked.'},
             status=401,
         )
 
     if not stored.user.is_active:
         return JsonResponse(
-            {"detail": "User account is disabled."},
+            {'detail': 'User account is disabled.'},
             status=401,
         )
 
@@ -172,7 +172,7 @@ def refresh_view(request: HttpRequest) -> JsonResponse:
 
     return JsonResponse(
         {
-            "access_token": new_access,
-            "token_type": "Bearer",
+            'access_token': new_access,
+            'token_type': 'Bearer',
         }
     )

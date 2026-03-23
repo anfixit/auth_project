@@ -1,6 +1,6 @@
 """Middleware приложения auth_core."""
 
-__all__ = ["JWTAuthMiddleware"]
+__all__ = ['JWTAuthMiddleware']
 
 from collections.abc import Callable
 
@@ -50,17 +50,17 @@ class JWTAuthMiddleware:
         request.user_id = None  # type: ignore[attr-defined]
         request.roles = []  # type: ignore[attr-defined]
 
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header[len("Bearer ") :]
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header[len('Bearer ') :]
             try:
                 payload = decode_token(token)
-                if payload.get("type") == "access":
-                    request.user_id = int(payload["sub"])  # type: ignore[attr-defined]
-                    request.roles = payload.get("roles", [])  # type: ignore[attr-defined]
+                if payload.get('type') == 'access':
+                    request.user_id = int(payload['sub'])  # type: ignore[attr-defined]
+                    request.roles = payload.get('roles', [])  # type: ignore[attr-defined]
             except jwt.ExpiredSignatureError:
-                logger.warning("JWT токен истёк")
+                logger.warning('JWT токен истёк')
             except jwt.InvalidTokenError:
-                logger.warning("Невалидный JWT токен")
+                logger.warning('Невалидный JWT токен')
 
         return self.get_response(request)

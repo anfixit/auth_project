@@ -1,12 +1,12 @@
 """Сервисный слой приложения users."""
 
 __all__ = [
-    "authenticate_user",
-    "create_user",
-    "get_role_names",
-    "hash_password",
-    "soft_delete_user",
-    "verify_password",
+    'authenticate_user',
+    'create_user',
+    'get_role_names',
+    'hash_password',
+    'soft_delete_user',
+    'verify_password',
 ]
 
 from argon2 import PasswordHasher
@@ -57,7 +57,7 @@ def create_user(
     password: str,
     first_name: str,
     last_name: str,
-    patronymic: str = "",
+    patronymic: str = '',
 ) -> User:
     """Создать пользователя с хешированным паролем.
 
@@ -76,10 +76,10 @@ def create_user(
     """
     if User.objects.filter(email=email).exists():
         logger.warning(
-            "Попытка регистрации с уже занятым email: %s",
+            'Попытка регистрации с уже занятым email: %s',
             email,
         )
-        raise ValueError(f"Email {email!r} already registered.")
+        raise ValueError(f'Email {email!r} already registered.')
     user = User(
         email=email,
         first_name=first_name,
@@ -89,7 +89,7 @@ def create_user(
     user.password = hash_password(password)
     user.save()
 
-    logger.info("Зарегистрирован новый пользователь: %s", email)
+    logger.info('Зарегистрирован новый пользователь: %s', email)
     return user
 
 
@@ -112,21 +112,21 @@ def authenticate_user(
     try:
         user = User.objects.get(email=email, is_active=True)
     except User.DoesNotExist:
-        _ph.hash("dummy_to_prevent_timing_attack")
+        _ph.hash('dummy_to_prevent_timing_attack')
         logger.warning(
-            "Неудачная попытка входа — пользователь не найден: %s",
+            'Неудачная попытка входа — пользователь не найден: %s',
             email,
         )
         return None
 
     if not verify_password(user.password, password):
         logger.warning(
-            "Неудачная попытка входа — неверный пароль: %s",
+            'Неудачная попытка входа — неверный пароль: %s',
             email,
         )
         return None
 
-    logger.info("Успешный вход пользователя: %s", email)
+    logger.info('Успешный вход пользователя: %s', email)
     return user
 
 
@@ -140,7 +140,7 @@ def soft_delete_user(user_id: int) -> None:
         user_id: Идентификатор пользователя.
     """
     User.objects.filter(pk=user_id).update(is_active=False)
-    logger.info("Аккаунт деактивирован: user_id=%s", user_id)
+    logger.info('Аккаунт деактивирован: user_id=%s', user_id)
 
 
 def get_role_names(user_id: int) -> list[str]:
@@ -158,6 +158,6 @@ def get_role_names(user_id: int) -> list[str]:
 
     return list(
         UserRole.objects.filter(user_id=user_id)
-        .select_related("role")
-        .values_list("role__name", flat=True)
+        .select_related('role')
+        .values_list('role__name', flat=True)
     )

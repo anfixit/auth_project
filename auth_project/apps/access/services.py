@@ -1,8 +1,8 @@
 """Сервисный слой приложения access."""
 
 __all__ = [
-    "check_permission",
-    "invalidate_permission_cache",
+    'check_permission',
+    'invalidate_permission_cache',
 ]
 
 from django.core.cache import cache
@@ -38,7 +38,7 @@ def check_permission(
     if not role_names:
         return False
 
-    cache_key = f"perm:{':'.join(sorted(role_names))}:{element_name}:{action}"
+    cache_key = f'perm:{":".join(sorted(role_names))}:{element_name}:{action}'
     cached = cache.get(cache_key)
     if cached is not None:
         return bool(cached)
@@ -51,8 +51,8 @@ def check_permission(
     result = any(rule.get(action, False) for rule in rules)
 
     logger.debug(
-        "Проверка прав [%s] %s.%s → %s",
-        ", ".join(role_names),
+        'Проверка прав [%s] %s.%s → %s',
+        ', '.join(role_names),
         element_name,
         action,
         result,
@@ -68,4 +68,4 @@ def invalidate_permission_cache() -> None:
     чтобы новые права вступили в силу немедленно.
     """
     cache.clear()
-    logger.info("Кеш прав доступа сброшен")
+    logger.info('Кеш прав доступа сброшен')

@@ -1,10 +1,10 @@
 """Представления приложения users."""
 
 __all__ = [
-    "delete_account_view",
-    "profile_view",
-    "register_view",
-    "update_profile_view",
+    'delete_account_view',
+    'profile_view',
+    'register_view',
+    'update_profile_view',
 ]
 
 from django.http import HttpRequest, JsonResponse
@@ -32,13 +32,13 @@ def _assign_default_role(user: User) -> None:
     from apps.access.models import Role, UserRole
 
     try:
-        role = Role.objects.get(name="user")
+        role = Role.objects.get(name='user')
         UserRole.objects.get_or_create(user=user, role=role)
     except Role.DoesNotExist:
         pass
 
 
-@require_http_methods(["POST"])
+@require_http_methods(['POST'])
 def register_view(request: HttpRequest) -> JsonResponse:
     """Зарегистрировать нового пользователя.
 
@@ -58,8 +58,8 @@ def register_view(request: HttpRequest) -> JsonResponse:
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
@@ -67,14 +67,14 @@ def register_view(request: HttpRequest) -> JsonResponse:
     data = serializer.validated_data
     try:
         user = create_user(
-            email=data["email"],
-            password=data["password"],
-            first_name=data["first_name"],
-            last_name=data["last_name"],
-            patronymic=data.get("patronymic", ""),
+            email=data['email'],
+            password=data['password'],
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            patronymic=data.get('patronymic', ''),
         )
     except ValueError as exc:
-        return JsonResponse({"detail": str(exc)}, status=409)
+        return JsonResponse({'detail': str(exc)}, status=409)
 
     _assign_default_role(user)
     return JsonResponse(
@@ -83,7 +83,7 @@ def register_view(request: HttpRequest) -> JsonResponse:
     )
 
 
-@require_http_methods(["GET"])
+@require_http_methods(['GET'])
 @login_required
 def profile_view(request: HttpRequest) -> JsonResponse:
     """Вернуть профиль текущего пользователя.
@@ -102,13 +102,13 @@ def profile_view(request: HttpRequest) -> JsonResponse:
         user = User.objects.get(pk=user_id, is_active=True)
     except User.DoesNotExist:
         return JsonResponse(
-            {"detail": "User not found."},
+            {'detail': 'User not found.'},
             status=404,
         )
     return JsonResponse(UserProfileSerializer(user).data)
 
 
-@require_http_methods(["PATCH"])
+@require_http_methods(['PATCH'])
 @login_required
 def update_profile_view(request: HttpRequest) -> JsonResponse:
     """Обновить профиль текущего пользователя.
@@ -128,7 +128,7 @@ def update_profile_view(request: HttpRequest) -> JsonResponse:
         user = User.objects.get(pk=user_id, is_active=True)
     except User.DoesNotExist:
         return JsonResponse(
-            {"detail": "User not found."},
+            {'detail': 'User not found.'},
             status=404,
         )
 
@@ -138,21 +138,21 @@ def update_profile_view(request: HttpRequest) -> JsonResponse:
     if not serializer.is_valid():
         return JsonResponse(
             {
-                "detail": "Validation error.",
-                "errors": serializer.errors,
+                'detail': 'Validation error.',
+                'errors': serializer.errors,
             },
             status=400,
         )
 
     data = serializer.validated_data
-    for field in ("first_name", "last_name", "patronymic"):
+    for field in ('first_name', 'last_name', 'patronymic'):
         if field in data:
             setattr(user, field, data[field])
-    user.save(update_fields=[*data.keys(), "updated_at"])
+    user.save(update_fields=[*data.keys(), 'updated_at'])
     return JsonResponse(UserProfileSerializer(user).data)
 
 
-@require_http_methods(["DELETE"])
+@require_http_methods(['DELETE'])
 @login_required
 def delete_account_view(request: HttpRequest) -> JsonResponse:
     """Мягкое удаление аккаунта текущего пользователя.
@@ -175,6 +175,6 @@ def delete_account_view(request: HttpRequest) -> JsonResponse:
     RefreshToken.objects.filter(user_id=user_id).delete()
     soft_delete_user(user_id)
     return JsonResponse(
-        {"detail": "Account deactivated successfully."},
+        {'detail': 'Account deactivated successfully.'},
         status=200,
     )

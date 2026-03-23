@@ -8,8 +8,8 @@ class RoleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Role
-        fields = ("id", "name", "description", "created_at")
-        read_only_fields = ("id", "created_at")
+        fields = ('id', 'name', 'description', 'created_at')
+        read_only_fields = ('id', 'created_at')
 
 
 class BusinessElementSerializer(serializers.ModelSerializer):
@@ -17,66 +17,66 @@ class BusinessElementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BusinessElement
-        fields = ("id", "name", "description")
-        read_only_fields = ("id",)
+        fields = ('id', 'name', 'description')
+        read_only_fields = ('id',)
 
 
 class AccessRuleSerializer(serializers.ModelSerializer):
     """Сериализатор правила доступа роли к объекту."""
 
     role_name = serializers.CharField(
-        source="role.name",
+        source='role.name',
         read_only=True,
     )
     element_name = serializers.CharField(
-        source="element.name",
+        source='element.name',
         read_only=True,
     )
 
     class Meta:
         model = AccessRule
         fields = (
-            "id",
-            "role",
-            "role_name",
-            "element",
-            "element_name",
-            "read",
-            "read_all",
-            "create",
-            "update",
-            "update_all",
-            "delete",
-            "delete_all",
+            'id',
+            'role',
+            'role_name',
+            'element',
+            'element_name',
+            'read',
+            'read_all',
+            'create',
+            'update',
+            'update_all',
+            'delete',
+            'delete_all',
         )
-        read_only_fields = ("id", "role_name", "element_name")
+        read_only_fields = ('id', 'role_name', 'element_name')
 
 
 class UserRoleSerializer(serializers.ModelSerializer):
     """Сериализатор назначения роли пользователю."""
 
     role_name = serializers.CharField(
-        source="role.name",
+        source='role.name',
         read_only=True,
     )
     user_email = serializers.CharField(
-        source="user.email",
+        source='user.email',
         read_only=True,
     )
 
     class Meta:
         model = UserRole
         fields = (
-            "id",
-            "user",
-            "user_email",
-            "role",
-            "role_name",
-            "assigned_at",
+            'id',
+            'user',
+            'user_email',
+            'role',
+            'role_name',
+            'assigned_at',
         )
         read_only_fields = (
-            "id",
-            "role_name",
-            "user_email",
-            "assigned_at",
+            'id',
+            'role_name',
+            'user_email',
+            'assigned_at',
         )

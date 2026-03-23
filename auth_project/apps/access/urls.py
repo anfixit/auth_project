@@ -16,54 +16,54 @@ from apps.access.views import (
 
 urlpatterns = [
     # Roles
-    path("roles/", roles_list_view, name="roles-list"),
+    path('roles/', roles_list_view, name='roles-list'),
     path(
-        "roles/create/",
+        'roles/create/',
         roles_create_view,
-        name="roles-create",
+        name='roles-create',
     ),
     path(
-        "roles/<int:role_id>/delete/",
+        'roles/<int:role_id>/delete/',
         roles_delete_view,
-        name="roles-delete",
+        name='roles-delete',
     ),
     # Business Elements
     path(
-        "elements/",
+        'elements/',
         elements_list_view,
-        name="elements-list",
+        name='elements-list',
     ),
     # Access Rules
-    path("rules/", rules_list_view, name="rules-list"),
+    path('rules/', rules_list_view, name='rules-list'),
     path(
-        "rules/create/",
+        'rules/create/',
         rules_create_view,
-        name="rules-create",
+        name='rules-create',
     ),
     path(
-        "rules/<int:rule_id>/update/",
+        'rules/<int:rule_id>/update/',
         rules_update_view,
-        name="rules-update",
+        name='rules-update',
     ),
     path(
-        "rules/<int:rule_id>/delete/",
+        'rules/<int:rule_id>/delete/',
         rules_delete_view,
-        name="rules-delete",
+        name='rules-delete',
     ),
     # User ↔ Role assignments
     path(
-        "user-roles/",
+        'user-roles/',
         user_roles_list_view,
-        name="user-roles-list",
+        name='user-roles-list',
     ),
     path(
-        "user-roles/assign/",
+        'user-roles/assign/',
         user_roles_assign_view,
-        name="user-roles-assign",
+        name='user-roles-assign',
     ),
     path(
-        "user-roles/<int:user_role_id>/remove/",
+        'user-roles/<int:user_role_id>/remove/',
         user_roles_remove_view,
-        name="user-roles-remove",
+        name='user-roles-remove',
     ),
 ]

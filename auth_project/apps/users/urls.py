@@ -8,16 +8,16 @@ from apps.users.views import (
 )
 
 urlpatterns = [
-    path("register/", register_view, name="user-register"),
-    path("me/", profile_view, name="user-profile"),
+    path('register/', register_view, name='user-register'),
+    path('me/', profile_view, name='user-profile'),
     path(
-        "me/update/",
+        'me/update/',
         update_profile_view,
-        name="user-update",
+        name='user-update',
     ),
     path(
-        "me/delete/",
+        'me/delete/',
         delete_account_view,
-        name="user-delete",
+        name='user-delete',
     ),
 ]

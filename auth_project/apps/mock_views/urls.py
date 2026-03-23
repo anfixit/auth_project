@@ -9,23 +9,23 @@ from apps.mock_views.views import (
 
 urlpatterns = [
     path(
-        "products/",
+        'products/',
         products_list_view,
-        name="mock-products",
+        name='mock-products',
     ),
     path(
-        "products/<int:product_id>/",
+        'products/<int:product_id>/',
         product_detail_view,
-        name="mock-product-detail",
+        name='mock-product-detail',
     ),
     path(
-        "orders/",
+        'orders/',
         orders_list_view,
-        name="mock-orders",
+        name='mock-orders',
     ),
     path(
-        "shops/",
+        'shops/',
         shops_list_view,
-        name="mock-shops",
+        name='mock-shops',
     ),
 ]

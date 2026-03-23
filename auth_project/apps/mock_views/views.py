@@ -11,71 +11,71 @@ from apps.auth_core.permissions import has_permission
 
 _MOCK_PRODUCTS = [
     {
-        "id": 1,
-        "name": "Laptop Pro 16",
-        "price": 199900,
-        "owner_id": 2,
+        'id': 1,
+        'name': 'Laptop Pro 16',
+        'price': 199900,
+        'owner_id': 2,
     },
     {
-        "id": 2,
-        "name": "Wireless Mouse",
-        "price": 2990,
-        "owner_id": 3,
+        'id': 2,
+        'name': 'Wireless Mouse',
+        'price': 2990,
+        'owner_id': 3,
     },
     {
-        "id": 3,
-        "name": "Mechanical Keyboard",
-        "price": 8990,
-        "owner_id": 2,
+        'id': 3,
+        'name': 'Mechanical Keyboard',
+        'price': 8990,
+        'owner_id': 2,
     },
 ]
 
 _MOCK_ORDERS = [
     {
-        "id": 1,
-        "product_id": 1,
-        "quantity": 2,
-        "status": "pending",
-        "owner_id": 4,
+        'id': 1,
+        'product_id': 1,
+        'quantity': 2,
+        'status': 'pending',
+        'owner_id': 4,
     },
     {
-        "id": 2,
-        "product_id": 3,
-        "quantity": 1,
-        "status": "completed",
-        "owner_id": 5,
+        'id': 2,
+        'product_id': 3,
+        'quantity': 1,
+        'status': 'completed',
+        'owner_id': 5,
     },
 ]
 
 _MOCK_SHOPS = [
     {
-        "id": 1,
-        "name": "TechZone",
-        "city": "Moscow",
-        "owner_id": 2,
+        'id': 1,
+        'name': 'TechZone',
+        'city': 'Moscow',
+        'owner_id': 2,
     },
     {
-        "id": 2,
-        "name": "Digital World",
-        "city": "SPb",
-        "owner_id": 3,
+        'id': 2,
+        'name': 'Digital World',
+        'city': 'SPb',
+        'owner_id': 3,
     },
 ]
 
 
-@require_http_methods(["GET"])
-@has_permission("products", "read_all")
+@require_http_methods(['GET'])
+@has_permission('products', 'read_all')
 def products_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть список всех товаров.
 
     GET /api/v1/mock/products/
     Требует право: products.read_all
     """
-    return JsonResponse({"results": _MOCK_PRODUCTS})
+    return JsonResponse({'results': _MOCK_PRODUCTS})
 
 
-@require_http_methods(["GET"])
-@has_permission("products", "read")
+@require_http_methods(['GET'])
+@has_permission('products', 'read')
 def product_detail_view(
     request: HttpRequest,
     product_id: int,
@@ -98,45 +98,45 @@ def product_detail_view(
     roles: list[str] = request.roles  # type: ignore[attr-defined]
 
     product = next(
-        (p for p in _MOCK_PRODUCTS if p["id"] == product_id),
+        (p for p in _MOCK_PRODUCTS if p['id'] == product_id),
         None,
     )
     if product is None:
         return JsonResponse(
-            {"detail": "Product not found."},
+            {'detail': 'Product not found.'},
             status=404,
         )
 
-    if check_permission(roles, "products", "read_all"):
+    if check_permission(roles, 'products', 'read_all'):
         return JsonResponse(product)
 
     # read — только свой объект
-    if product["owner_id"] != user_id:
+    if product['owner_id'] != user_id:
         return JsonResponse(
-            {"detail": "Forbidden."},
+            {'detail': 'Forbidden.'},
             status=403,
         )
 
     return JsonResponse(product)
 
 
-@require_http_methods(["GET"])
-@has_permission("orders", "read_all")
+@require_http_methods(['GET'])
+@has_permission('orders', 'read_all')
 def orders_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть список всех заказов.
 
     GET /api/v1/mock/orders/
     Требует право: orders.read_all
     """
-    return JsonResponse({"results": _MOCK_ORDERS})
+    return JsonResponse({'results': _MOCK_ORDERS})
 
 
-@require_http_methods(["GET"])
-@has_permission("shops", "read_all")
+@require_http_methods(['GET'])
+@has_permission('shops', 'read_all')
 def shops_list_view(request: HttpRequest) -> JsonResponse:
     """Вернуть список всех магазинов.
 
     GET /api/v1/mock/shops/
     Требует право: shops.read_all
     """
-    return JsonResponse({"results": _MOCK_SHOPS})
+    return JsonResponse({'results': _MOCK_SHOPS})

@@ -10,39 +10,39 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="User",
+            name='User',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "password",
-                    models.CharField(max_length=128, verbose_name="password"),
+                    'password',
+                    models.CharField(max_length=128, verbose_name='password'),
                 ),
                 (
-                    "last_login",
+                    'last_login',
                     models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
+                        blank=True, null=True, verbose_name='last login'
                     ),
                 ),
-                ("email", models.EmailField(max_length=254, unique=True)),
-                ("first_name", models.CharField(max_length=100)),
-                ("last_name", models.CharField(max_length=100)),
-                ("patronymic", models.CharField(blank=True, max_length=100)),
-                ("is_active", models.BooleanField(default=True)),
-                ("is_staff", models.BooleanField(default=False)),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
+                ('email', models.EmailField(max_length=254, unique=True)),
+                ('first_name', models.CharField(max_length=100)),
+                ('last_name', models.CharField(max_length=100)),
+                ('patronymic', models.CharField(blank=True, max_length=100)),
+                ('is_active', models.BooleanField(default=True)),
+                ('is_staff', models.BooleanField(default=False)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
             ],
             options={
-                "db_table": "users",
-                "ordering": ("email",),
+                'db_table': 'users',
+                'ordering': ('email',),
             },
         ),
     ]
