@@ -1,3 +1,5 @@
+"""Точка входа WSGI для деплоя через Gunicorn / uWSGI."""
+
 import os
 
 from django.core.wsgi import get_wsgi_application

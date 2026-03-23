@@ -1,3 +1,12 @@
+"""Сериализаторы приложения access."""
+
+__all__ = [
+    'AccessRuleSerializer',
+    'BusinessElementSerializer',
+    'RoleSerializer',
+    'UserRoleSerializer',
+]
+
 from rest_framework import serializers
 
 from apps.access.models import AccessRule, BusinessElement, Role, UserRole

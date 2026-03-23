@@ -1,3 +1,5 @@
+"""Корневая конфигурация URL проекта."""
+
 from django.urls import include, path
 
 urlpatterns = [

@@ -1,4 +1,11 @@
-import json
+"""Представления приложения users."""
+
+__all__ = [
+    'delete_account_view',
+    'profile_view',
+    'register_view',
+    'update_profile_view',
+]
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -11,23 +18,17 @@ from apps.users.serializers import (
     UserProfileSerializer,
 )
 from apps.users.services import create_user, soft_delete_user
-
-
-def _json_body(request: HttpRequest) -> dict:
-    """Безопасно распарсить JSON-тело запроса.
-
-    Returns:
-        Словарь с данными или пустой словарь
-        если тело невалидно.
-    """
-    try:
-        return json.loads(request.body)
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return {}
+from apps.utils import parse_json_body
 
 
 def _assign_default_role(user: User) -> None:
-    """Назначить роль 'user' при регистрации."""
+    """Назначить роль 'user' при регистрации.
+
+    Args:
+        user: Экземпляр только что созданного пользователя.
+    """
+    # Отложенный импорт для разрыва циклической зависимости
+    # users → access → users
     from apps.access.models import Role, UserRole
 
     try:
@@ -50,7 +51,7 @@ def register_view(request: HttpRequest) -> JsonResponse:
     Returns:
         JsonResponse с профилем созданного пользователя.
     """
-    serializer = RegisterSerializer(data=_json_body(request))
+    serializer = RegisterSerializer(data=parse_json_body(request))
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -122,7 +123,9 @@ def update_profile_view(request: HttpRequest) -> JsonResponse:
             status=404,
         )
 
-    serializer = UpdateProfileSerializer(data=_json_body(request))
+    serializer = UpdateProfileSerializer(
+        data=parse_json_body(request),
+    )
     if not serializer.is_valid():
         return JsonResponse(
             {
@@ -155,10 +158,10 @@ def delete_account_view(request: HttpRequest) -> JsonResponse:
     """
     user_id: int = request.user_id  # type: ignore[attr-defined]
 
+    # Отложенный импорт для разрыва циклической зависимости
     from apps.auth_core.models import RefreshToken
 
     RefreshToken.objects.filter(user_id=user_id).delete()
-
     soft_delete_user(user_id)
     return JsonResponse(
         {'detail': 'Account deactivated successfully.'},

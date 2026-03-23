@@ -1,3 +1,5 @@
+"""Конфигурация приложения access."""
+
 from django.apps import AppConfig
 
 

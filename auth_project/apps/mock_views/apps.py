@@ -1,3 +1,5 @@
+"""Конфигурация приложения mock_views."""
+
 from django.apps import AppConfig
 
 

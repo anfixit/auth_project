@@ -1,7 +1,15 @@
+"""Mock views — вымышленные бизнес-объекты.
+
+Демонстрируют работу системы авторизации.
+Таблицы в БД не создаются.
 """
-Mock views — вымышленные бизнес-объекты для демонстрации
-работы системы авторизации. Таблицы в БД не создаются.
-"""
+
+__all__ = [
+    'orders_list_view',
+    'product_detail_view',
+    'products_list_view',
+    'shops_list_view',
+]
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -70,6 +78,12 @@ def products_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/mock/products/
     Требует право: products.read_all
+
+    Args:
+        request: HTTP-запрос с user_id и roles.
+
+    Returns:
+        JsonResponse со списком товаров.
     """
     return JsonResponse({'results': _MOCK_PRODUCTS})
 
@@ -89,7 +103,7 @@ def product_detail_view(
 
     Args:
         request: HTTP-запрос с user_id и roles.
-        product_id: идентификатор товара.
+        product_id: Идентификатор товара.
 
     Returns:
         JsonResponse с данными товара или ошибкой.
@@ -127,6 +141,12 @@ def orders_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/mock/orders/
     Требует право: orders.read_all
+
+    Args:
+        request: HTTP-запрос с user_id и roles.
+
+    Returns:
+        JsonResponse со списком заказов.
     """
     return JsonResponse({'results': _MOCK_ORDERS})
 
@@ -138,5 +158,11 @@ def shops_list_view(request: HttpRequest) -> JsonResponse:
 
     GET /api/v1/mock/shops/
     Требует право: shops.read_all
+
+    Args:
+        request: HTTP-запрос с user_id и roles.
+
+    Returns:
+        JsonResponse со списком магазинов.
     """
     return JsonResponse({'results': _MOCK_SHOPS})
