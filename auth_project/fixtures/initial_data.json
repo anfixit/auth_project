@@ -1,0 +1,368 @@
+[
+  {
+    "model": "access.role",
+    "pk": 1,
+    "fields": {
+      "name": "admin",
+      "description": "Full access to everything",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "access.role",
+    "pk": 2,
+    "fields": {
+      "name": "manager",
+      "description": "Manage products, orders and shops",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "access.role",
+    "pk": 3,
+    "fields": {
+      "name": "user",
+      "description": "Regular user — own data only",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "access.role",
+    "pk": 4,
+    "fields": {
+      "name": "guest",
+      "description": "Read-only limited access",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+
+  {
+    "model": "access.businesselement",
+    "pk": 1,
+    "fields": { "name": "users", "description": "User accounts" }
+  },
+  {
+    "model": "access.businesselement",
+    "pk": 2,
+    "fields": { "name": "products", "description": "Product catalogue" }
+  },
+  {
+    "model": "access.businesselement",
+    "pk": 3,
+    "fields": { "name": "shops", "description": "Shop directory" }
+  },
+  {
+    "model": "access.businesselement",
+    "pk": 4,
+    "fields": { "name": "orders", "description": "Customer orders" }
+  },
+  {
+    "model": "access.businesselement",
+    "pk": 5,
+    "fields": { "name": "access_rules", "description": "RBAC rules management" }
+  },
+
+  {
+    "model": "access.accessrule",
+    "pk": 1,
+    "fields": {
+      "role": 1,
+      "element": 1,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": true
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 2,
+    "fields": {
+      "role": 1,
+      "element": 2,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": true
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 3,
+    "fields": {
+      "role": 1,
+      "element": 3,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": true
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 4,
+    "fields": {
+      "role": 1,
+      "element": 4,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": true
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 5,
+    "fields": {
+      "role": 1,
+      "element": 5,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": true
+    }
+  },
+
+  {
+    "model": "access.accessrule",
+    "pk": 6,
+    "fields": {
+      "role": 2,
+      "element": 1,
+      "read": true,
+      "read_all": true,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 7,
+    "fields": {
+      "role": 2,
+      "element": 2,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 8,
+    "fields": {
+      "role": 2,
+      "element": 3,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": true,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 9,
+    "fields": {
+      "role": 2,
+      "element": 4,
+      "read": true,
+      "read_all": true,
+      "create": true,
+      "update": true,
+      "update_all": true,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 10,
+    "fields": {
+      "role": 2,
+      "element": 5,
+      "read": true,
+      "read_all": false,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+
+  {
+    "model": "access.accessrule",
+    "pk": 11,
+    "fields": {
+      "role": 3,
+      "element": 1,
+      "read": true,
+      "read_all": false,
+      "create": false,
+      "update": true,
+      "update_all": false,
+      "delete": true,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 12,
+    "fields": {
+      "role": 3,
+      "element": 2,
+      "read": true,
+      "read_all": false,
+      "create": true,
+      "update": true,
+      "update_all": false,
+      "delete": true,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 13,
+    "fields": {
+      "role": 3,
+      "element": 3,
+      "read": true,
+      "read_all": false,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 14,
+    "fields": {
+      "role": 3,
+      "element": 4,
+      "read": true,
+      "read_all": false,
+      "create": true,
+      "update": true,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 15,
+    "fields": {
+      "role": 3,
+      "element": 5,
+      "read": false,
+      "read_all": false,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+
+  {
+    "model": "access.accessrule",
+    "pk": 16,
+    "fields": {
+      "role": 4,
+      "element": 1,
+      "read": false,
+      "read_all": false,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 17,
+    "fields": {
+      "role": 4,
+      "element": 2,
+      "read": true,
+      "read_all": true,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 18,
+    "fields": {
+      "role": 4,
+      "element": 3,
+      "read": true,
+      "read_all": true,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 19,
+    "fields": {
+      "role": 4,
+      "element": 4,
+      "read": false,
+      "read_all": false,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  },
+  {
+    "model": "access.accessrule",
+    "pk": 20,
+    "fields": {
+      "role": 4,
+      "element": 5,
+      "read": false,
+      "read_all": false,
+      "create": false,
+      "update": false,
+      "update_all": false,
+      "delete": false,
+      "delete_all": false
+    }
+  }
+]

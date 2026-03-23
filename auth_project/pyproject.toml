@@ -1,0 +1,48 @@
+[project]
+name = "auth-project"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.1",
+    "djangorestframework>=3.15",
+    "psycopg[binary]>=3.2",
+    "pyjwt>=2.9",
+    "argon2-cffi>=23.1",
+    "pydantic-settings>=2.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-django>=4.9",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "django-stubs>=5.1",
+    "djangorestframework-stubs>=3.15",
+]
+
+[tool.ruff]
+line-length = 79
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "S", "B"]
+ignore = ["S101", "S105", "S106"]
+
+[tool.ruff.lint.isort]
+force-single-line = false
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["mypy_django_plugin.main"]
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "--cov=apps --cov-report=term-missing"
