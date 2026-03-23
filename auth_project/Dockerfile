@@ -16,8 +16,11 @@ RUN uv sync --no-dev
 
 COPY --chown=appuser:appuser . .
 
+# Создаём папку для логов с нужными правами
+RUN mkdir -p /app/logs && chown appuser:appuser /app/logs
+
 USER appuser
 
 EXPOSE 8000
 
-CMD ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "uv run python manage.py migrate --noinput && uv run python manage.py loaddata fixtures/initial_data.json && uv run python manage.py runserver 0.0.0.0:8000"]
